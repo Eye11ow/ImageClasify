@@ -41,6 +41,7 @@ class ThreeLayerNN:
         self.scores = self.a1.dot(self.params['W2']) + self.params['b2']
         return self.scores
 
+
     def loss(self, X, y=None):
         scores = self.forward(X)
         if y is None:
@@ -50,13 +51,17 @@ class ThreeLayerNN:
         data_loss = cross_entropy_loss(probs, y)
         reg_loss = 0.5 * self.reg * (np.sum(self.params['W1']**2) + np.sum(self.params['W2']**2))
         loss = data_loss + reg_loss
+        return loss
 
-        grads = {}
+    def backward(self, X, y):
+        scores = self.forward(X)
+        probs = softmax(scores)
         N = X.shape[0]
         dscores = probs.copy()
         dscores[np.arange(N), np.argmax(y, axis=1)] -= 1
         dscores /= N
 
+        grads = {}
         grads['W2'] = self.a1.T.dot(dscores) + self.reg * self.params['W2']
         grads['b2'] = np.sum(dscores, axis=0)
 
@@ -68,7 +73,7 @@ class ThreeLayerNN:
         grads['W1'] = X.T.dot(dz1) + self.reg * self.params['W1']
         grads['b1'] = np.sum(dz1, axis=0)
 
-        return loss, grads
+        return grads
 
     def predict(self, X):
         scores = self.forward(X)

@@ -29,14 +29,15 @@ def train(model, X_train, y_train, X_val, y_val, num_epochs=20, batch_size=128, 
             X_batch = X_train[start:end]
             y_batch = y_train[start:end]
             
-            train_loss, grads = model.loss(X_batch, y_batch)
+            train_loss = model.loss(X_batch, y_batch)
+            grads = model.backward(X_batch, y_batch)
             history['train_loss'].append(train_loss)
             model.params = sgd_update(model.params, grads, learning_rate)
         
         train_pred = model.predict(X_train)
         train_acc = np.mean(train_pred == np.argmax(y_train, axis=1))
         val_pred = model.predict(X_val)
-        val_loss = model.loss(X_val, y_val)[0]
+        val_loss = model.loss(X_val, y_val)
         val_acc = np.mean(val_pred == np.argmax(y_val, axis=1))
         history['train_acc'].append(train_acc)
         history['val_loss'].append(val_loss)
