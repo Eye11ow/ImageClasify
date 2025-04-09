@@ -65,7 +65,7 @@ python main.py --mode train --hidden_size 1024 --learning_rate 0.05 --reg 0.001
 利用训练得到的模型来测试数据，评估模型性能
 
 ```bash
-python main.py --mode test --model_path best_model.npz
+python main.py --mode test --model_path best_model
 ```
 
 ## 代码解释
